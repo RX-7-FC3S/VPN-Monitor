@@ -18,54 +18,16 @@
     <script type="text/javascript">
         function xl2tpd_status() {
             $.ajax({
-                url: '/service_xl2tpd_status',
+                url: 'service_xl2tpd_log',
                 type: 'GET',
-                success: function (xl2tpd_status) {
-                    console.clear()
-                    for (var i = 0; i < xl2tpd_status['res'].length; i++) {
-                        console.log(xl2tpd_status['res'][i])
-                    }
+                success: function (data){
+                    document.body.innerText = JSON.stringify(data)
                 }
             })
         }
-
-        function ipsec_status(){
-            $.ajax({
-                url: '/service_ipsec_status',
-                type: 'GET',
-                success: function (ipsec_status){
-                    console.clear()
-                    for ( var i = 0; i < ipsec_status['res'].length; i ++) {
-                        console.log(ipsec_status['res'][i])
-                    }
-                }
-            })
-        }
-        function connecting_number(){
-            $.ajax({
-                url: '/connecting_number',
-                type: 'GET',
-                cache: false,
-                success: function (res){
-                    let connectingNumber = parseInt(res[11]) - 1
-                    let body = document.body
-                    body.innerText = '当前已连接用户数：' + connectingNumber
-                    if ( connectingNumber === 0 ){
-                        body.style.color = '#008f1f'
-                    } if ( connectingNumber > 0 ){
-                        body.style.color = 'blue'
-                    } if ( connectingNumber > 2 ){
-                        body.style.color = 'red'
-                    }
-                }
-            })
-        }
-        connecting_number()
+        xl2tpd_status()
         setInterval(function (){
-            connecting_number()
+            xl2tpd_status()
         }, 3000)
-        setInterval(function (){
-            location.reload();
-        }, 30000)
     </script>
 </html>
