@@ -3,6 +3,7 @@ import os
 import re
 import time
 
+
 xl2tpd_status = {}
 user = []
 
@@ -13,7 +14,6 @@ def status():
 
     if xl2tpd_log:
         xl2tpd_log = xl2tpd_log[-1]
-        print(xl2tpd_log)
 
         if 'Call established with' in xl2tpd_log:
             item = {
@@ -22,13 +22,26 @@ def status():
             }
             if item not in user:
                 user.append(item)
+
         if 'Connection closed to' in xl2tpd_log:
             ip = re.search('((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}', xl2tpd_log).group()
             for item in user:
                 if item['ip'] == ip:
                     user.remove(item)
 
-    xl2tpd_status.update(user=user)
+    xl2tpd_status.update(connections=len(user), user=user)
     return xl2tpd_status
 
+
+if __name__ == '__main__':
+
+    try:
+        os.mknod('xl2tpd.status')
+    except FileExistsError as e:
+        pass
+    while 0 == 0:
+        with open('xl2tpd.status', 'w') as file:
+            file.write(str(status()))
+        print('---------------')
+        time.sleep(1)
 
